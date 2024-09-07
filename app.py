@@ -2,14 +2,13 @@ import streamlit as st
 import pandas as pd
 import pickle
 import gzip
+import plotly.express as px
 
-# Carregar o modelo
-with gzip.open('model_teste.pkl.gz', 'rb') as f:
+with gzip.open('model.pkl.gz', 'rb') as f:
     model = pickle.load(f)
 
-# Função para gerar dados de entrada
+
 def prepare_input(tipo_demanda, horario, local, nota_avaliacao_ai, tempo_medio_atendimento, estado, numero_funcionarios, mes, dia_semana, ano):
-    # Criar um DataFrame com os dados de entrada
     input_data = pd.DataFrame({
         'tipo_demanda': [tipo_demanda],
         'horario': [horario],
@@ -23,29 +22,20 @@ def prepare_input(tipo_demanda, horario, local, nota_avaliacao_ai, tempo_medio_a
         'ano': [ano]
     })
     
-   
-    # Convertendo variáveis categóricas para variáveis dummy
     input_data = pd.get_dummies(input_data)
     
-    # Ajustar o dataframe para ter as mesmas colunas que o modelo
     model_columns = model.feature_names_in_
     input_data = input_data.reindex(columns=model_columns, fill_value=0)
     
     
     return input_data
 
-# Título do aplicativo
-
-
 df = pd.read_csv('Dados_tratados.csv')
-
-
 media_volume_atendimentos = df['volume_atendimentos'].mean()
 maior_volume_atendimentos = df['volume_atendimentos'].max()
 
 with st.container():
    
-
     col4, col5 = st.columns(2)
 
     with col4:
@@ -114,15 +104,12 @@ with st.container():
             unsafe_allow_html=True
         )
     
-   
-
     col1, col2 = st.columns(2)
     
     with col1:
         
         
         grouped_data = df.groupby('dia_semana')['volume_atendimentos'].sum().sort_values(ascending = False)
-        # Usando HTML e CSS para personalizar o título
         st.markdown(
             """
             <style>
@@ -164,6 +151,85 @@ with st.container():
         )
         st.area_chart(grouped_data_dois)
 
+
+    col6, col7 = st.columns(2)
+    
+    with col6:
+        
+        
+        grouped_data_seis = df.groupby('local')['volume_atendimentos_nao_finalizados'].sum().sort_values(ascending = False)
+
+        st.markdown(
+            """
+            <style>
+            .custom-subheader-seis {
+                margin-top: 20px;
+                color: #034381; /* Cor do texto */
+                font-size: 18px; /* Tamanho da fonte */
+                font-weight: medium; /*
+                font-family: 'Poppins', sans-serif; /* 
+            }
+            </style>
+            <div class="custom-subheader-seis">
+                Volume de atendimentos não finalizados por local
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+        fig = px.bar(
+        grouped_data_seis,
+        x=grouped_data_seis.index,
+        y=grouped_data_seis.values,
+        color=grouped_data_seis.index,  
+        color_discrete_sequence=['#034381', '#FFDC02', '#5C5C5C']  
+        )
+        fig.update_layout(
+        width=300,  
+        height=380,  
+        showlegend=False,
+        yaxis_title='volume',
+        plot_bgcolor='rgba(0, 0, 0, 0)', 
+        )
+        st.plotly_chart(fig)
+
+    with col7:
+        
+        grouped_data_sete = df.groupby('local')['volume_atendimentos_finalizados'].sum().sort_values(ascending = False)
+        st.markdown(
+            """
+            <style>
+            .custom-subheader-sete {
+                margin-top: 20px;
+                color: #034381; /* Cor do texto */
+                font-size: 18px; /* Tamanho da fonte */
+                font-weight: medium; /*
+                font-family: 'Poppins', sans-serif; /* 
+            }
+            </style>
+            <div class="custom-subheader-sete">
+                Volume de atendimentos finalizados por local
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+        fig = px.bar(
+        grouped_data_sete,
+        x=grouped_data_sete.index,
+        y=grouped_data_sete.values,
+        color=grouped_data_sete.index,  
+        color_discrete_sequence=['#034381', '#FFDC02', '#5C5C5C'] 
+        )
+         
+        fig.update_layout(
+        width=400,  
+        height=410,  
+      
+        yaxis_title='volume',
+        plot_bgcolor='rgba(0, 0, 0, 0)',  
+        
+        )
+        st.plotly_chart(fig)
+
 st.markdown(
     """
     <style>
@@ -200,7 +266,7 @@ with st.container():
     
     col1, col2 = st.columns(2)
     with col1:
-        # Inputs do usuário
+        
         tipo_demanda = st.selectbox('Selecione o Tipo de Demanda', ['Pacotes', 'Cartas', 'Expressa', 'Outro'])
     with col2:
         horario = st.number_input('Selecione o Horário (horas)', 0, 23, 12)
@@ -226,10 +292,9 @@ with st.container():
         ano = st.slider('Ano', 2010, 2024, 2014)
 
 
-# Preparar dados de entrada
+
 input_data = prepare_input(tipo_demanda, horario, local, nota_avaliacao_ai, tempo_medio_atendimento, estado, numero_funcionarios, mes, dia_semana, ano)
 
-# Fazer a previsão
 try:
     if not input_data.empty:
         predicao = model.predict(input_data)
@@ -259,8 +324,8 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-
+df_base = pd.read_csv('dados_correios.csv')
 with st.container():
-    st.dataframe(df.head(10),1000,400)
+    st.dataframe(df_base.head(10),1000,400)
 
     
