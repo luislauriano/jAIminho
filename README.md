@@ -44,6 +44,6 @@ Gabriella Graciano de Souza<br/>
 ## 🌐 Navegue na solução
 
 1. 🔗 **Clique no link:** [Acesse aqui](https://jaiiminho-client.vercel.app/login)
-2. 🧑‍💻 **Utilize o CPF:** `11111111111`
-3. 🔑 **Utilize a senha:** `12345678`
+2. 🧑‍💻 **Utilize o CPF:** `12345678910`
+3. 🔑 **Utilize a senha:** `tangamandapio`
 4. 👉 **Clique em** `Entrar` e explore a plataforma! 🚀
