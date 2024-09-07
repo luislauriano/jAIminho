@@ -16,8 +16,8 @@ Gustavo Henrique Lima Mendes de Almeida<br/>
 📧 E-mail: gustavohlma8@gmail.com<br/>
 🌐 GitHub: [GustavoHLMA](https://github.com/GustavoHLMA)
 
-Luis Vinicius<br/>
-📧 E-mail: luis@hotmail.com<br/>
+Luís Vinicius Lauriano de França<br/>
+📧 E-mail: luislauriano@outlook.com.br<br/>
 🌐 GitHub: [luislauriano](https://github.com/luislauriano)
 
 Rennan José da Silva Miranda<br/>
